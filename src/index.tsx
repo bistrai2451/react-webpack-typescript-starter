@@ -3,6 +3,6 @@ import * as ReactDOM from 'react-dom';
 import { App } from './components/App';
 
 ReactDOM.render(
-    <App userName={'Andre'} lang={'TypeScript'} />,
+    <App userName={'Person'} lang={'TypeScript'} />,
     document.getElementById('app')
 );
