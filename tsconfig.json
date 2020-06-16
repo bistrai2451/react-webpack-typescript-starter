@@ -1,4 +1,5 @@
 {
+  "compileOnSave": true,
     "compilerOptions": {
       "jsx": "react",
       "module": "commonjs",
@@ -8,7 +9,7 @@
       "preserveConstEnums": true,
       "removeComments": true,
       "sourceMap": true,
-      "target": "es5",
+      "target": "es6",
       "strict": true,
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
