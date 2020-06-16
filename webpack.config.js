@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
     devServer: {
@@ -11,7 +11,7 @@ module.exports = {
     },
     entry: ['babel-polyfill', './src/index.tsx'],
     target: 'web',
-    mode: isProduction ? "production" : "development",
+    mode: !isDevelopment ? "production" : "development",
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
@@ -41,19 +41,19 @@ module.exports = {
             {
                 test: /\.module\.s(a|c)ss$/,
                 loader: [
-                    !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
                     "css-modules-typescript-loader",
                     {
                         loader: 'css-loader',
                         options: {
                             modules: true,
-                            sourceMap: !isProduction
+                            sourceMap: isDevelopment
                         }
                     },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: !isProduction
+                            sourceMap: isDevelopment
                         }
                     }
                 ]
@@ -62,13 +62,13 @@ module.exports = {
                 test: /\.s(a|c)ss$/,
                 exclude: /\.module.(s(a|c)ss)$/,
                 loader: [
-                    !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
                     "css-modules-typescript-loader",
                     'css-loader',
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: !isProduction
+                            sourceMap: isDevelopment
                         }
                     }
                 ]
@@ -80,8 +80,8 @@ module.exports = {
             template: path.resolve(__dirname, 'src', 'components', 'index.html'),
         }),
         new MiniCssExtractPlugin({
-            filename: !isProduction ? '[name].css' : '[name].[hash].css',
-            chunkFilename: !isProduction ? '[id].css' : '[id].[hash].css'
+            filename: isDevelopment ? '[name].css' : '[name].[hash].css',
+            chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css'
         })
     ]
 };
