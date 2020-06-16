@@ -2,16 +2,18 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 module.exports = {
     entry: './src/index.tsx',
     target: 'web',
-    mode: 'development',
+    mode: isProduction ? "production" : "development",
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx', '.scss'],
     },
     module: {
         rules: [
@@ -31,6 +33,41 @@ module.exports = {
             {
                 test: /\.css$/,
                 loader: 'css-loader',
+            },
+            {
+                test: /\.module\.s(a|c)ss$/,
+                loader: [
+                    !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    "css-modules-typescript-loader",
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            sourceMap: !isProduction
+                        }
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: !isProduction
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.s(a|c)ss$/,
+                exclude: /\.module.(s(a|c)ss)$/,
+                loader: [
+                    !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    "css-modules-typescript-loader",
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: !isProduction
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -39,7 +76,8 @@ module.exports = {
             template: path.resolve(__dirname, 'src', 'components', 'index.html'),
         }),
         new MiniCssExtractPlugin({
-            filename: './src/assets/css/style.css',
+            filename: !isProduction ? '[name].css' : '[name].[hash].css',
+            chunkFilename: !isProduction ? '[id].css' : '[id].[hash].css'
         })
     ]
 };
